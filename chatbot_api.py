@@ -1,17 +1,20 @@
+import os
+import oracledb
 from fastapi import FastAPI
 from pydantic import BaseModel
-import oracledb
 import re
 
 app = FastAPI(title="SWA Chatbot API")
 
-# اتصال Oracle
-dsn = oracledb.makedsn("95.216.70.183", 1521, service_name="orclpdb")
-conn = oracledb.connect(
-    user="COMP",
-    password="COMP",
-    dsn=dsn
-)
+# قراءة المتغيرات من Render
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_SERVICE = os.getenv("DB_SERVICE")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+
+dsn = oracledb.makedsn(DB_HOST, int(DB_PORT), service_name=DB_SERVICE)
+conn = oracledb.connect(user=DB_USER, password=DB_PASS, dsn=dsn)
 
 class ChatRequest(BaseModel):
     user: str
